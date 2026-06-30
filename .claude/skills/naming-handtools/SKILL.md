@@ -24,9 +24,9 @@ Chia mã `need_research` thành lô (~8–12 mã/agent). Mỗi lô = 1 subagent 
 ### B3 — Gộp + ghép sheet + cập nhật cache
 ```bash
 python "<SKILL_DIR>/scripts/build_sheet.py" research_all.json --orig "<file>" \
- --code-col "<code_col>" --cache cache.json -o "<out>.xlsx"
+ --code-col "<code_col>" --cache cache.json --min-sources 2 -o "<out>.xlsx"
 ```
-Engine gán `category_id` (nếu có `category_ids.local.json`), đổ TS_*, set status; `--cache` bù mã đã cache + ghi cache mới → lần sau chỉ tra mã mới.
+Engine gán `category_id` (nếu có `category_ids.local.json`), đổ TS_*, set status. **Mọi dòng gốc giữ nguyên** (mã trùng có cờ `Trùng`, điền cùng kết quả). `status=OK` khi ≥ `--min-sources` nguồn (client chỉnh được). `--cache` bù mã đã cache + ghi cache mới.
 
 ### B4 — Cổng QA + báo cáo
 - Mọi dòng `OK` phải có **≥2 nguồn** + tên chuẩn + category. `REVIEW_LOW_SOURCE`/`REVIEW`/`UNKNOWN_TYPE` → liệt kê để user xử lý.

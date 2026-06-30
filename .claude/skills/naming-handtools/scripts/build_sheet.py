@@ -50,7 +50,7 @@ def category_of(rec):
     return None, None
 
 
-def build_row(rec):
+def build_row(rec, min_sources=2):
     cid, tname = category_of(rec)
     name = normalize_units(rec.get("name_vi") or "")
     specs = rec.get("specs") or {}
@@ -59,22 +59,23 @@ def build_row(rec):
     row = {
         "Mã hãng": rec.get("code"),
         "Tên chuẩn": name,
-        "category_id": cid,
+        "category_id": cid,          # None nếu chưa cấu hình category_ids.local.json
         "Loại": tname,
     }
     for k, col in SPEC_TO_TS.items():
         v = specs.get(k)
         row[col] = "" if v is None else v
     row["Nguồn (URL catalog hãng)"] = "; ".join(srcs)
-    # OK chỉ khi >=2 nguồn + confidence cao + có tên + category
-    if cid and name and len(srcs) >= 2 and conf in ("high", "cao", ""):
-        row["status"] = "OK"
-    elif not cid:
+    # OK = có loại + tên + đủ SỐ NGUỒN (min_sources, client tùy chỉnh) + không low.
+    # category_id KHÔNG bắt buộc (tùy taxonomy local).
+    if not tname:
         row["status"] = "UNKNOWN_TYPE"
-    elif len(srcs) < 2 or conf in ("low", "thap", "thấp"):
+    elif not name:
+        row["status"] = "REVIEW"
+    elif conf in ("low", "thap", "thấp") or len(srcs) < min_sources:
         row["status"] = "REVIEW_LOW_SOURCE"
     else:
-        row["status"] = "REVIEW"
+        row["status"] = "OK"
     return row
 
 
@@ -85,6 +86,8 @@ def main():
     ap.add_argument("--sheet", default=0)
     ap.add_argument("--code-col", default="Mã hãng")
     ap.add_argument("--cache", default=None, help="cache.json: gộp kết quả cũ + ghi kết quả mới")
+    ap.add_argument("--min-sources", type=int, default=2,
+                    help="số nguồn tối thiểu để status=OK (client tùy chỉnh, mặc định 2)")
     ap.add_argument("-o", "--out", required=True)
     a = ap.parse_args()
 
@@ -107,7 +110,13 @@ def main():
                 cache[c] = r
         Path(a.cache).write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    out = pd.DataFrame([build_row(r) for r in data])
+    # 1 record/mã (research). Bảng tra theo mã để điền cho MỌI dòng (kể cả trùng).
+    by_code = {}
+    for r in data:
+        c = str(r.get("code") or "").strip()
+        if c and c not in by_code:
+            by_code[c] = build_row(r, a.min_sources)
+    out = pd.DataFrame(list(by_code.values()))
 
     if a.orig:
         sheet = a.sheet
@@ -120,10 +129,11 @@ def main():
         if a.code_col in odf.columns:
             odf2 = odf.rename(columns={a.code_col: "Mã hãng"})
             odf2["Mã hãng"] = odf2["Mã hãng"].astype(str).str.strip()
+            # GIỮ ĐỦ MỌI DÒNG gốc (kể cả mã trùng) -> merge how=left; đánh dấu cờ Trùng
+            odf2["Trùng"] = odf2["Mã hãng"].duplicated(keep="first")
             out["Mã hãng"] = out["Mã hãng"].astype(str).str.strip()
-            merged = odf2.merge(out, on="Mã hãng", how="right")
-            # cột gốc (theo thứ tự file) trước, cột chuẩn/ TS_ sau
-            orig_order = [("Mã hãng" if c == a.code_col else c) for c in odf.columns]
+            merged = odf2.merge(out, on="Mã hãng", how="left")
+            orig_order = [("Mã hãng" if c == a.code_col else c) for c in odf.columns] + ["Trùng"]
             new_cols = [c for c in out.columns if c not in orig_order]
             out = merged[orig_order + new_cols]
 

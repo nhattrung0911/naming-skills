@@ -6,11 +6,12 @@
 ```mermaid
 flowchart LR
     A([📄 File mã hãng]) --> B{detect domain}
-    B -->|vòng bi| C[⚙️ engine ISO<br/>d×D×B · miễn phí]
-    B -->|dụng cụ| D[🔎 research ≥2 nguồn<br/>uy tín · có URL]
-    CACHE[(💾 cache.json)] -. bỏ mã đã tra .-> D
-    C --> E([✅ Sheet chuẩn<br/>Tên · Loại · TS_* · Nguồn · status])
-    D --> E
+    B -->|vòng bi| C[⚙️ engine: loại/tên<br/>+ d×D×B NHÁP]
+    B -->|dụng cụ| D[⚙️ engine: loại/tên]
+    C --> R[🔎 search + đối chiếu<br/>≥N nguồn · có URL]
+    D --> R
+    CACHE[(💾 cache.json)] -. bỏ mã đã tra .-> R
+    R --> E([✅ Sheet chuẩn<br/>Tên · Loại · TS_* · Nguồn · status])
 ```
 
 ---
@@ -50,13 +51,15 @@ Chi tiết cài + gắn `category_id`: [INSTALLATION.md](INSTALLATION.md).
 | | |
 |---|---|
 | 💾 **Cache** | lần sau chỉ tra mã mới → list lớn rất rẻ |
-| ♻️ **Dedup** | mã trùng tự gộp |
-| ⚙️ **Deterministic-first** | vòng bi mã chuẩn ra tên + d×D×B **không cần search** |
-| ⛓️ **Batch + early-stop** | gộp mã theo lô, dừng ở 2 nguồn |
+| 🏷️ **Đánh dấu trùng** | mã trùng **giữ đủ dòng** (cờ `Trùng`), chỉ research **1 lần/mã** |
+| ⚙️ **Deterministic-first** | **loại/tên/category** ra free; **số liệu** (cả d×D×B) thì search |
+| 🎚️ **Số nguồn tùy chỉnh** | `--min-sources N` (mặc định **2**) — client prompt thêm được |
+| ⛓️ **Batch + early-stop** | gộp mã theo lô, dừng ở đủ N nguồn |
 
-## 🔒 An toàn data
-- Repo **0 id nội bộ**: `category_id` để trống tới khi bạn gắn `category_ids.local.json` (gitignored).
-- Thông số = **search có nguồn**, KHÔNG bịa, KHÔNG suy từ format mã.
+## 🔒 An toàn & chính xác
+- Repo **0 id nội bộ**: `category_id` trống tới khi gắn `category_ids.local.json` (gitignored).
+- Số liệu = **search + đối chiếu ≥N nguồn, có URL**. KHÔNG bịa, KHÔNG suy từ format mã.
+- Vòng bi: bảng ISO chỉ là **số nháp đối chiếu** — d×D×B cuối vẫn lấy từ nguồn.
 
 ## 🧩 Gồm 3 skill
 `/naming` (router) · `/naming-bearings` (vòng bi) · `/naming-handtools` (dụng cụ cầm tay).

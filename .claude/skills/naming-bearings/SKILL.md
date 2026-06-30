@@ -1,14 +1,14 @@
 ---
 name: naming-bearings
 slug: naming-bearings
-description: "Chuẩn hóa dữ liệu VÒNG BI (bearings) từ MÃ (+HÃNG): nhận diện loại vòng bi, gán category_id, tra/điền kích thước d×D×B theo ISO, phát hiện nắp chắn, sinh tên chuẩn form '{Loại} dxDxB mm {Nắp chắn} {Hãng} {Mã}'. Mã ISO/mét resolve bằng bảng; mã inch (Timken)/GOST/lạ thì web-search số liệu thật rồi điền. Sub-skill domain BEARING của /naming. Dùng khi: chuẩn hóa/đặt tên/điền kích thước/gán category vòng bi, standardize bearing data, file có cột mã vòng bi (6xxx, UCP, 30xxx, NU..., 222xx...)."
+description: "Chuẩn hóa dữ liệu VÒNG BI (bearings) từ MÃ (+HÃNG): nhận diện loại vòng bi, gán category_id, điền kích thước d×D×B, phát hiện nắp chắn, sinh tên chuẩn form '{Loại} dxDxB mm {Nắp chắn} {Hãng} {Mã}'. MỌI mã đều SEARCH + ĐỐI CHIẾU catalog hãng để lấy d/D/B thật; bảng ISO nhúng chỉ là số NHÁP để đối chiếu, KHÔNG tự suy ra làm cuối. Sub-skill domain BEARING của /naming. Dùng khi: chuẩn hóa/đặt tên/điền kích thước/gán category vòng bi, standardize bearing data, file có cột mã vòng bi (6xxx, UCP, 30xxx, NU..., 222xx...)."
 ---
 
 # Bearing Naming & Standardizer
 
 Skill này dạy **CÁCH & CẤU TRÚC đặt tên + phân loại** vòng bi — KHÔNG phải kho dữ liệu kích thước để tra cứng.
 
-> ⚠️ **NGUYÊN TẮC CỐT LÕI:** Kích thước/thông số **mỗi hãng mỗi khác** (hậu tố E/ECP/EM/DB/DF, dung sai, series riêng, hệ inch…). Vì vậy **PHẢI search catalog THẬT của đúng hãng → thu thập d/D/B + thông số thật → rồi mới ghép vào cấu trúc tên.** Bảng số nhúng trong skill chỉ là *bootstrap cho mã ISO mét tiêu chuẩn* (6204 = 20×47×14 ở mọi hãng) để chạy nhanh — KHÔNG được coi là nguồn chân lý cho mã có hậu tố/đặc biệt/inch.
+> ⚠️ **NGUYÊN TẮC CỐT LÕI:** **MỌI mã đều PHẢI search + ĐỐI CHIẾU catalog hãng** để lấy d/D/B + thông số thật (kể cả mã ISO mét trông "chuẩn") — kích thước/thông số mỗi hãng mỗi khác (hậu tố E/ECP/EM/DB/DF, dung sai, series, hệ inch…). **Bảng số nhúng = số NHÁP để ĐỐI CHIẾU, KHÔNG tự suy ra làm cuối, KHÔNG bịa.** Nháp lệch nguồn → tin catalog hãng. Đủ nguồn (≥ số nguồn client đặt, mặc định 2) mới chốt OK.
 
 Skill cho 2 thứ deterministic (đúng mọi hãng): **(1) CẤU TRÚC tên** và **(2) LOẠI → category_id**. Phần **số liệu** thì đi tìm thật.
 
@@ -33,8 +33,8 @@ Skill cho 2 thứ deterministic (đúng mọi hãng): **(1) CẤU TRÚC tên** v
 
 > Đọc `workflow.md` để biết chi tiết. Tóm tắt:
 
-1. **Phân tích cấu trúc (engine)** — `standardize.py` đọc cột mã (+hãng), engine xác định **LOẠI → category_id → cấu trúc tên + nắp chắn** (phần này đúng mọi hãng). Engine cũng đề xuất d/D/B *nháp* nếu mã là ISO mét tiêu chuẩn.
-2. **SEARCH THẬT theo HÃNG (bắt buộc cho số liệu)** — với mỗi mã, tra catalog CHÍNH của đúng hãng (vd SKF skf.com, NTN ntnglobal, Koyo/JTEKT, NSK, FAG/Schaeffler medias, Timken cad.timken.com, C&U, Asahi…). Lấy d, D, B/T + thông số THẬT của đúng hậu tố/series đó. Đổi inch→mm (1in=25.4mm). **KHÔNG dùng số nháp của engine làm cuối nếu mã có hậu tố/đặc biệt/inch — phải đối chiếu catalog hãng.** Ghi nguồn (URL).
+1. **Phân tích cấu trúc (engine)** — `standardize.py` đọc cột mã (+hãng), engine xác định **LOẠI → category_id → cấu trúc tên + nắp chắn** (phần này đúng mọi hãng). Engine đề xuất d/D/B *NHÁP* (chỉ để đối chiếu, KHÔNG phải số cuối).
+2. **SEARCH + ĐỐI CHIẾU theo HÃNG (bắt buộc cho MỌI mã)** — với mỗi mã, tra catalog CHÍNH của đúng hãng (SKF skf.com, NTN ntnglobal, Koyo/JTEKT, NSK, FAG/Schaeffler medias, Timken cad.timken.com, C&U, Asahi…) + ≥ số nguồn client đặt (mặc định 2), chéo kiểm. Lấy d, D, B/T + thông số THẬT của đúng hậu tố/series. Đổi inch→mm (1in=25.4mm). **Đối chiếu số nháp engine với nguồn; lệch → tin nguồn. KHÔNG lấy số nháp làm cuối, KHÔNG bịa.** Ghi nguồn (URL).
 3. **Ghép vào cấu trúc** — `standardize(code, brand, dims=(d,D,B))` để sinh tên đúng form + giữ category.
 4. **Cổng QA**:
  - `d < D` luôn đúng. `d ≥ D` → sai, sửa.

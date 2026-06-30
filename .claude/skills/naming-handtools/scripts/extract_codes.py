@@ -3,8 +3,9 @@
 Đọc file Excel/CSV chứa cột MÃ HÃNG -> in JSON list để agent chia việc.
 Tự dò cột mã (Mã hãng / ma_hang / code / part_number...) + cột brand/description nếu có.
 
-Tối ưu chi phí: --dedup (gộp mã trùng) + --cache cache.json (bỏ mã đã tra trước đó).
--> agent CHỈ research mã `need_research=true`. Mã đã cache lấy lại từ file, KHÔNG search lại.
+Tối ưu chi phí: ĐÁNH DẤU mã trùng (KHÔNG gộp — giữ đủ dòng) + --cache (bỏ mã đã tra trước).
+-> agent CHỈ research mã `need_research=true` (lần đầu xuất hiện, chưa cache). Mã trùng/đã cache
+   dùng lại kết quả, KHÔNG search lại — nhưng vẫn còn nguyên dòng trong output.
 
 Dùng:
     python extract_codes.py input.xlsx [--sheet 0] [--code-col "Mã hãng"] [--cache cache.json]
@@ -42,7 +43,6 @@ def main():
     ap.add_argument("--sheet", default=0)
     ap.add_argument("--code-col", default=None)
     ap.add_argument("--cache", default=None, help="cache.json đã tra trước -> bỏ qua mã đã có")
-    ap.add_argument("--no-dedup", action="store_true", help="giữ mã trùng (mặc định gộp)")
     a = ap.parse_args()
     cache = {}
     if a.cache and Path(a.cache).exists():
@@ -72,20 +72,22 @@ def main():
         if pd.isna(code) or str(code).strip() == "":
             continue
         code = str(code).strip()
-        if not a.no_dedup and code in seen:        # gộp mã trùng
-            continue
+        is_dup = code in seen                      # ĐÁNH DẤU trùng, KHÔNG bỏ dòng
         seen.add(code)
         rows.append({
             "i": int(i),
             "code": code,
             "brand": (str(r.get(brand_col)).strip() if brand_col and not pd.isna(r.get(brand_col)) else None),
             "desc": (str(r.get(desc_col)).strip() if desc_col and not pd.isna(r.get(desc_col)) else None),
-            "need_research": code not in cache,    # đã cache -> khỏi search lại
+            "dup": is_dup,                          # True = mã trùng (dòng lặp)
+            # research 1 lần/mã: chỉ lần đầu xuất hiện + chưa cache
+            "need_research": (not is_dup) and (code not in cache),
         })
     todo = sum(1 for r in rows if r["need_research"])
     print(json.dumps({"code_col": str(code_col), "brand_col": str(brand_col) if brand_col else None,
                       "desc_col": str(desc_col) if desc_col else None, "sheet": sheet,
-                      "n": len(rows), "n_todo": todo, "n_cached": len(rows) - todo,
+                      "n": len(rows), "n_unique": len(seen), "n_todo": todo,
+                      "n_dup": sum(1 for r in rows if r["dup"]),
                       "rows": rows}, ensure_ascii=False))
 
 
