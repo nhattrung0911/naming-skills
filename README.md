@@ -4,8 +4,9 @@ Bộ **skill** cho [Claude Code](https://claude.com/claude-code): đưa vào **d
 tự ra **tên chuẩn (tiếng Việt) + thông số kĩ thuật + mã category**, bằng cách cho subagent
 Claude Code **tự search nhiều nguồn uy tín** rồi điền.
 
-> Dùng cho catalog phụ tùng công nghiệp. Các `category_id` trong file dữ liệu là **giá trị ví dụ** —
-> thay bằng taxonomy của bạn.
+> Dùng cho catalog phụ tùng công nghiệp. Repo **không kèm `category_id`** — output mặc định có
+> **tên loại** chuẩn, `category_id` để trống. Gắn id theo ERP của bạn qua `category_ids.local.json`
+> (gitignored) — xem [INSTALLATION.md](INSTALLATION.md).
 
 ## Có gì
 
@@ -20,21 +21,22 @@ Claude Code **tự search nhiều nguồn uy tín** rồi điền.
 **Thông số phải lấy từ data thật / search chéo kiểm có nguồn — KHÔNG bịa, KHÔNG suy từ format mã.**
 Phần cấu trúc (loại → category, form tên, chuẩn hóa đơn vị) là deterministic; phần con số thì đi tìm thật.
 
-## Cài (1 lần)
+## Cài & dùng nhanh
 
-Copy 3 thư mục skill vào thư mục skills của bạn:
-
-- Theo project: `<repo>/.claude/skills/`
-- Hoặc toàn máy: `~/.claude/skills/`
-
+**Cách A — plugin marketplace:**
 ```
-.claude/skills/
-├── naming/
-├── naming-bearings/
-└── naming-handtools/
+/plugin marketplace add nhattrung0911/naming-skills
+/plugin install naming-skills@naming-skills
 ```
 
-Cần: Claude Code + Python có `pandas`, `openpyxl`.
+**Cách B — clone & dùng ngay:**
+```bash
+git clone https://github.com/nhattrung0911/naming-skills.git
+cd naming-skills && pip install -r requirements.txt
+```
+Mở thư mục bằng Claude Code → skill trong `.claude/skills/` tự nhận.
+
+Chi tiết + gắn `category_id` theo ERP của bạn: xem **[INSTALLATION.md](INSTALLATION.md)**.
 
 ## Dùng
 
@@ -68,23 +70,28 @@ Biết trước loại thì gọi thẳng:
 
 | Mã hãng | Tên chuẩn | category_id | Loại | TS_Hệ Dẫn Động | TS_Cỡ/Khẩu (mm) | Nguồn | status |
 |---|---|---|---|---|---|---|---|
-| 423024M | Đầu Tuýp 24 mm 1/2 Inch Kingtony 423024M | 3993 | Đầu Tuýp Lẻ | 1/2 Inch | 24 | kingtony.com; … | OK |
-| 6205-2RS | Vòng Bi Cầu Rãnh Sâu Một Dãy 25x52x15 mm 2 Nắp Chắn Cao Su 6205-2RS | 1604 | Vòng Bi Cầu Rãnh Sâu | — | — | (bảng ISO) | OK |
-| 41117 | Cờ Lê Vòng Miệng 17 mm Sata 41117 | 3981 | Cờ Lê Vòng Miệng | — | 17 | sata.vn; … | OK |
+| 423024M | Đầu Tuýp 24 mm 1/2 Inch Kingtony 423024M | *(của bạn)* | Đầu Tuýp Lẻ | 1/2 Inch | 24 | kingtony.com; … | OK |
+| 6205-2RS | Vòng Bi Cầu Rãnh Sâu Một Dãy 25x52x15 mm 2 Nắp Chắn Cao Su 6205-2RS | *(của bạn)* | Vòng Bi Cầu Rãnh Sâu | — | — | (bảng ISO) | OK |
+| 41117 | Cờ Lê Vòng Miệng 17 mm Sata 41117 | *(của bạn)* | Cờ Lê Vòng Miệng | — | 17 | sata.vn; … | OK |
 
+- `category_id` để trống cho tới khi bạn cấu hình `category_ids.local.json` (map *Loại → id ERP*). `Loại` luôn có.
 - `status = OK` chỉ khi **≥2 nguồn khớp**; thiếu/không chắc → `REVIEW` để bạn xem lại.
 - Cột `TS_*` = thông số kĩ thuật; cột không áp dụng (vd vòng bi không có hệ dẫn động) để trống.
 
 ## Cấu trúc
 
 ```
-naming/             scripts/detect_domain.py            # router nhận domain
-naming-bearings/    scripts/ (engine, bảng kích thước, category_map) + references/
-naming-handtools/   scripts/ (engine, extract_codes, build_sheet, category_map) + references/
+.claude-plugin/marketplace.json + plugin.json   # cài qua /plugin
+.claude/skills/
+├── naming/            scripts/detect_domain.py              # router nhận domain
+├── naming-bearings/   scripts/ (engine, bảng kích thước, category_map) + references/
+└── naming-handtools/  scripts/ (engine, extract_codes, build_sheet, category_map) + references/
+INSTALLATION.md · README.md · requirements.txt · LICENSE
 ```
 
 Mỗi skill: `SKILL.md` = quy trình agent làm theo; `references/` = quy ước đặt tên, bản đồ category,
-schema thông số, workflow; `scripts/` = helper deterministic (Python).
+schema thông số, workflow; `scripts/` = helper deterministic (Python). `category_ids.local.json`
+(gitignored) = map *Loại → id ERP của bạn*.
 
 ## Ghi chú
 

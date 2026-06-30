@@ -1,0 +1,24 @@
+{
+  "name": "naming-skills",
+  "owner": {
+    "name": "nhattrung0911",
+    "url": "https://github.com/nhattrung0911"
+  },
+  "metadata": {
+    "description": "Standardize product names + technical specs + category from a list of part codes. Umbrella /naming router with bearings and handtools domains.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "naming-skills",
+      "source": ".",
+      "description": "From a list of manufacturer part codes -> standard Vietnamese name + technical specs + category, by cross-checking multiple reputable sources. Includes /naming (router), /naming-bearings, /naming-handtools.",
+      "version": "1.0.0",
+      "author": { "name": "nhattrung0911" },
+      "repository": "https://github.com/nhattrung0911/naming-skills",
+      "license": "MIT",
+      "keywords": ["naming", "standardize", "catalog", "bearings", "handtools", "part-number", "spec", "vietnamese"],
+      "category": "productivity"
+    }
+  ]
+}

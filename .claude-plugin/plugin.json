@@ -1,0 +1,13 @@
+{
+  "name": "naming-skills",
+  "description": "Standardize product names + technical specs + category from part codes (umbrella /naming router + bearings + handtools).",
+  "version": "1.0.0",
+  "skills": [
+    "./.claude/skills/naming",
+    "./.claude/skills/naming-bearings",
+    "./.claude/skills/naming-handtools"
+  ],
+  "author": { "name": "nhattrung0911" },
+  "repository": "https://github.com/nhattrung0911/naming-skills",
+  "license": "MIT"
+}

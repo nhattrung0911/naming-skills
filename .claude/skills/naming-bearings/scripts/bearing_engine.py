@@ -16,6 +16,12 @@ import dimension_tables as R
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CATMAP = json.load(open(os.path.join(HERE, 'category_map.json'), encoding='utf-8'))['type_to_category']
+# category_id = taxonomy RIÊNG của bạn. File committed để null. Đặt id thật vào
+# category_ids.local.json (đã gitignore, KHÔNG push) -> nạp đè ở đây.
+_LOCAL = os.path.join(HERE, 'category_ids.local.json')
+if os.path.exists(_LOCAL):
+    CATMAP.update({k: v for k, v in json.load(open(_LOCAL, encoding='utf-8')).items()
+                   if not k.startswith('_')})
 
 # =================== parsing ===================
 def strip_suffix(s):

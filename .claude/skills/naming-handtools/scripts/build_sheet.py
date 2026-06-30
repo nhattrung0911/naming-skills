@@ -20,7 +20,7 @@ Dùng:
 import argparse, json, sys, io
 from pathlib import Path
 import pandas as pd
-from handtool_engine import detect_type, normalize_units
+from handtool_engine import detect_type, category_id_of, normalize_units
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
@@ -41,12 +41,12 @@ TS_COLS = list(SPEC_TO_TS.values())
 
 
 def category_of(rec):
-    """category_id + Loại từ type (ưu tiên) hoặc name_vi."""
+    """category_id + Loại từ type (ưu tiên) hoặc name_vi. id theo taxonomy local (None nếu chưa cấu hình)."""
     for key in (rec.get("type"), rec.get("name_vi")):
         if key:
-            cid, tname, _, _ = detect_type(str(key))
-            if cid:
-                return cid, tname
+            tname, _, _ = detect_type(str(key))
+            if tname:
+                return category_id_of(tname), tname
     return None, None
 
 

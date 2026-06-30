@@ -21,18 +21,30 @@ from pathlib import Path
 
 _MAP = json.loads((Path(__file__).with_name("category_map.json")).read_text(encoding="utf-8"))
 RULES = [(re.compile(r["re"], re.I | re.U), r) for r in _MAP["rules"]]
-NAMES = _MAP["names"]
 BRANDS = _MAP["brands"]
 _BRAND_RE = re.compile(r"\b(" + "|".join(re.escape(b) for b in BRANDS) + r")\b", re.I)
 
+# category_id = taxonomy RIÊNG của bạn (mỗi ERP id khác nhau). File committed KHÔNG chứa id.
+# Map "tên loại -> id của bạn" đặt trong category_ids.local.json (đã gitignore, KHÔNG push).
+# Thiếu file -> category_id = None, vẫn ra tên loại chuẩn.
+_LOCAL = Path(__file__).with_name("category_ids.local.json")
+TYPE_TO_ID = {}
+if _LOCAL.exists():
+    TYPE_TO_ID = {k: v for k, v in json.loads(_LOCAL.read_text(encoding="utf-8")).items()
+                  if not k.startswith("_")}
+
 
 def detect_type(desc):
-    """-> (category_id:int|None, type_name, family, review:bool)"""
+    """-> (type_name|None, family|None, review:bool)"""
     for rx, r in RULES:
         if rx.search(desc):
-            cid = r["id"]
-            return cid, NAMES.get(str(cid), "?"), r["family"], bool(r.get("review"))
-    return None, None, None, False
+            return r["type"], r["family"], bool(r.get("review"))
+    return None, None, False
+
+
+def category_id_of(type_name):
+    """id theo taxonomy local (None nếu chưa cấu hình)."""
+    return TYPE_TO_ID.get(type_name)
 
 
 def normalize_units(s):
@@ -104,7 +116,8 @@ def parse_specs_draft(desc):
 
 def standardize(desc, ma_hang=None, brand=None):
     desc = str(desc)
-    cid, tname, family, review = detect_type(desc)
+    tname, family, review = detect_type(desc)
+    cid = category_id_of(tname)
     b, _ = split_brand(desc, brand)
     code = str(ma_hang).strip() if ma_hang not in (None, "", "nan") else None
     if code is None and b:                          # cố lấy mã sau hãng nếu không có mã hãng
@@ -122,7 +135,7 @@ def standardize(desc, ma_hang=None, brand=None):
     # NGUYÊN TẮC CỨNG: thông số PHẢI search từ mã hãng (catalog hãng), có nguồn.
     # Engine chỉ cho LOẠI/CATEGORY/FORM + thông số DRAFT chưa xác minh.
     # -> status mặc định NEEDS_WEB; KHÔNG bao giờ tự set OK.
-    if not cid:
+    if not tname:
         status = "UNKNOWN_TYPE"
     elif review:
         status = "REVIEW_TYPE+NEEDS_WEB"

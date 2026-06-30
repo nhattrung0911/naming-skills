@@ -15,10 +15,11 @@ Skill CHUNG (kiểu dispatcher). Nhận file có **cột mã hãng** → tự ph
 | **unknown** | (hỏi / mặc định research) | không tín hiệu | → naming-handtools research, hoặc hỏi user |
 
 ## Quy trình (chạy full)
+> Trong các lệnh dưới, `<SKILL_DIR>` = thư mục chứa SKILL.md này (cùng cấp `scripts/`) — dùng đường dẫn tuyệt đối.
 
 ### B1 — Phát hiện domain từng dòng
 ```bash
-python "<skill>/scripts/detect_domain.py" "<file>" [--sheet <s>] [--code-col "<cột>"]
+python "<SKILL_DIR>/scripts/detect_domain.py" "<file>" [--sheet <s>] [--code-col "<cột>"]
 ```
 Trả JSON `{code_col, n, counts:{bearing,handtool,unknown}, rows:[{i,code,domain,why}]}`.
 - `error` (không thấy cột mã) → hỏi user tên cột.

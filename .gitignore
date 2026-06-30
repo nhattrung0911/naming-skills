@@ -5,3 +5,4 @@ __pycache__/
 *.xls
 *.csv
 .DS_Store
+category_ids.local.json

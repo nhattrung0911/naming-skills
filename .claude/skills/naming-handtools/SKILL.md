@@ -10,10 +10,11 @@ Input: file Excel/CSV có **cột mã hãng** (có thể KHÔNG có description)
 > ⚠️ **NGUYÊN TẮC CỨNG:** Mọi description & thông số **PHẢI lấy từ SEARCH NHIỀU NGUỒN UY TÍN, chéo kiểm ≥2 nguồn khớp**. KHÔNG bịa, KHÔNG suy từ format mã, KHÔNG nhận 1 nguồn rao vặt làm chân lý. Không tra được → status REVIEW, để trống, KHÔNG đoán.
 
 ## Quy trình agent (chạy full, không hỏi lại trừ khi thiếu cột mã)
+> Trong các lệnh dưới, `<SKILL_DIR>` = thư mục chứa SKILL.md này (cùng cấp `scripts/`) — dùng đường dẫn tuyệt đối.
 
 ### B1 — Đọc mã
 ```bash
-python "<skill>/scripts/extract_codes.py" "<file>" [--sheet <s>] [--code-col "<tên cột>"]
+python "<SKILL_DIR>/scripts/extract_codes.py" "<file>" [--sheet <s>] [--code-col "<tên cột>"]
 ```
 Trả JSON `{code_col, brand_col, desc_col, n, rows:[{i,code,brand,desc}]}`. Nếu `error` (không thấy cột mã) → hỏi user tên cột. Lưu JSON này.
 
@@ -25,7 +26,7 @@ Mỗi subagent trả về **JSON list** theo schema (mục "Schema") — ghi ra 
 ### B3 — Gộp + ghép sheet (deterministic)
 Gộp các `research_part*.json` thành `research_all.json` (1 list). Rồi:
 ```bash
-python "<skill>/scripts/build_sheet.py" research_all.json --orig "<file>" \
+python "<SKILL_DIR>/scripts/build_sheet.py" research_all.json --orig "<file>" \
  --sheet <s> --code-col "<code_col>" -o "<out>.xlsx"
 ```
 Engine tự gán `category_id` từ `type`/`name_vi` (xem `references/category_map.md`), đổ thông số vào cột TS_*, set status.

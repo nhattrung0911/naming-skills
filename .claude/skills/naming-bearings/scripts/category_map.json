@@ -1,0 +1,42 @@
+{
+  "_comment": "Bearing type names. category_id KHÔNG nằm ở đây: đặt trong category_ids.local.json (gitignored). Type-only ở committed.",
+  "type_to_category": {
+    "Vòng Bi Cầu Rãnh Sâu Một Dãy": null,
+    "Vòng Bi Cầu Rãnh Sâu Một Dãy Có Mặt Bích": null,
+    "Vòng Bi Cầu Rãnh Sâu Một Dãy Inox": null,
+    "Vòng Bi Cầu Tiếp Xúc Góc Một Dãy": null,
+    "Vòng Bi Cầu Tiếp Xúc Góc Hai Dãy": null,
+    "Vòng Bi Cầu Tự Lựa": null,
+    "Vòng Bi Đũa Côn 1 Dãy": null,
+    "Vòng Bi Đũa Côn 2 Dãy": null,
+    "Vòng Bi Đũa Trụ 1 Dãy": null,
+    "Vòng Bi Đũa Trụ 2 Dãy": null,
+    "Vòng Bi Tang Trống Tự Lựa": null,
+    "Vòng Bi Cầu Chặn Trục": null,
+    "Vòng Bi Tang Trống Chặn Trục": null,
+    "Vòng Bi Kim Vỏ Dập": null,
+    "Vòng Bi Kim": null,
+    "Vòng Bi Kim Với Lồng Giữ": null,
+    "Vòng Bi Kim Chặn": null,
+    "Vòng Bi Kim Kết Hợp Cầu Chặn Trục": null,
+    "Gối Đỡ Vòng Bi": null,
+    "Gối Đỡ Vòng Bi Mặt Bích Hình Vuông": null,
+    "Gối Đỡ Vòng Bi Mặt Bích Hình Thoi": null,
+    "Gối Đỡ Vòng Bi Mặt Bích Tròn": null,
+    "Gối Đỡ Vòng Bi Tăng Đưa Băng Tải": null,
+    "Gối Đỡ Vòng Bi Treo": null,
+    "Vòng Bi Cầu Cho Gối Đỡ": null,
+    "Gối Đỡ Hai Nửa": null,
+    "Vòng Bi Mắt Trâu": null,
+    "Vòng Bi Cam": null,
+    "Vòng Bi Ly Hợp": null,
+    "Vòng Bi Cầu Lỗ Côn": null,
+    "Vòng Bi Không Cần Mỡ": null
+  },
+  "notes": {
+    "form": "Tên = {Loại} {Nắp chắn nếu có} {d}x{D}x{B} mm {Hãng} {Mã giữ nguyên hậu tố}. Hệ inch: dxDxB dạng phân số + 'inch'. Mã giữ dấu/hậu tố như input (6204-2RS, NU-324, 63/22-2RS).",
+    "fallback": "Loại không có trong map -> để trống category + CAN_REVIEW. Không tự chế id.",
+    "pillow_subtype": "UCP/UKP, UCF/UKF, UCFL/UCFA, UCFC, UCT, UCHA, UC/UK insert.",
+    "needle": "Drawn-cup HK/BK/BA; solid NA/RNA/NART/NK/TAF; with cage KT; thrust AXK."
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "_doc": "Handtool type -> catalog category_id (giá trị VÍ DỤ — thay bằng taxonomy của bạn). rules = ưu tiên trên xuống, match đầu tiên thắng (specific -> generic). re = regex (re.I, unicode) khớp trong description sản phẩm.",
+  "_doc": "Handtool type -> tên loại chuẩn. category_id KHÔNG nằm ở đây: map 'tên loại -> id ERP của bạn' đặt trong category_ids.local.json (gitignored). rules = ưu tiên trên xuống, match đầu tiên thắng. re = regex (re.I, unicode) khớp trong description.",
   "brands": [
     "Kingtony",
     "Sata",
@@ -20,551 +20,468 @@
     "Endura",
     "Crossman"
   ],
-  "names": {
-    "4314": "Đầu Tuýp Chuyển Đổi",
-    "3993": "Đầu Tuýp Lẻ",
-    "3994": "Đầu Tuýp Gắn Mũi",
-    "3995": "Đầu Tuýp Lắc Léo",
-    "4076": "Bộ Đầu Tuýp",
-    "4742": "Tay Vặn Đầu Tuýp",
-    "4736": "Tay Vặn Tự Động",
-    "4006": "Cờ Lê Lực (Cần Siết Lực)",
-    "4739": "Cần Siết Lắc Léo",
-    "4737": "Cần Siết Chữ L",
-    "4738": "Cần Siết Đầu Trượt Chữ T",
-    "4741": "Cần Siết Chữ T",
-    "3981": "Cờ Lê Vòng Miệng",
-    "3980": "Cờ Lê 2 Đầu Vòng",
-    "3979": "Cờ Lê 2 Đầu Miệng",
-    "3982": "Cờ Lê Tự Động - Bánh Cóc",
-    "4157": "Cờ Lê Đầu Tuýp Đuôi Chuột",
-    "3984": "Cờ Lê Đặc Biệt",
-    "6914": "Cờ Lê Cách Điện",
-    "4071": "Bộ Cờ Lê",
-    "4010": "Kìm Cắt",
-    "4011": "Kìm Mũi Nhọn",
-    "4012": "Kìm Mở Phe",
-    "4009": "Kìm Đầu Bằng (Kìm Điện)",
-    "4014": "Kìm Bấm Cos",
-    "4015": "Kìm Bấm Chết",
-    "4013": "Kìm Tuốt Dây",
-    "4017": "Kìm Mỏ Quạ",
-    "4307": "Kìm Đặc Biệt",
-    "4081": "Kìm 2 Lỗ",
-    "4016": "Kìm Bấm Xích - Đai",
-    "4080": "Bộ Kìm",
-    "4001": "Tua Vít Dẹp",
-    "4000": "Tua Vít Bake",
-    "6858": "Tua Vít Hoa Thị",
-    "6854": "Tua Vít 2 Đầu",
-    "6856": "Tua Vít Đầu Lục Giác",
-    "6857": "Tua Vít Đầu Khẩu Lục Giác",
-    "3162": "Tua Vít Đóng",
-    "4078": "Bộ Tua Vít",
-    "4005": "Mũi Vít - Phụ Kiện",
-    "4077": "Bộ Mũi Vít",
-    "1326": "Cây Vặn Lục Giác Chữ L",
-    "1412": "Cây Vặn Lục Giác Chữ T",
-    "1330": "Bộ Lục Giác",
-    "6850": "Mỏ Lết Có Điều Chỉnh",
-    "6851": "Mỏ Lết Răng",
-    "4749": "Búa Nhựa",
-    "4746": "Búa Cao Su",
-    "4747": "Búa Tạ",
-    "4748": "Búa Đầu Bi Tròn",
-    "4745": "Búa Nhổ Đinh",
-    "4750": "Búa Gò",
-    "4751": "Búa Đồng",
-    "6946": "Búa Rìu",
-    "4054": "Cảo 2 Chấu",
-    "4055": "Cảo 3 Chấu",
-    "6947": "Cảo Chữ F",
-    "4053": "Cảo Chữ C",
-    "4315": "Cảo Đặc Biệt",
-    "4067": "Cảo Vô Bạc Piston",
-    "4066": "Cảo Mở Lọc Dầu",
-    "4021": "Kéo Cắt Tôn",
-    "6864": "Kéo Cắt Đa Năng",
-    "4744": "Kéo Cắt Cành",
-    "3021": "Kéo Cắt Ống Nhựa",
-    "4020": "Dao Rọc Giấy",
-    "4022": "Dao Cắt Ống Đồng",
-    "6948": "Dao Rọc Cáp",
-    "2597": "Thước Cuộn - Thước Dây",
-    "2608": "Thước Thủy - Nivo",
-    "2598": "Thước Cặp",
-    "2596": "Thước Thẳng",
-    "2605": "Thước Đo Cao",
-    "2606": "Thước Đo Góc",
-    "4035": "Đục (Mũi Đột)",
-    "3065": "Mũi Đục",
-    "4089": "Bộ Đục",
-    "4004": "Bút Thử Điện",
-    "3824": "Mỏ Hàn Chì - Phụ Kiện",
-    "3099": "Bộ Dụng Cụ Đa Năng"
-  },
   "rules": [
     {
       "re": "\\bBộ\\b.*Dụng Cụ|\\bBộ Dụng Cụ",
-      "id": 3099,
+      "type": "Bộ Dụng Cụ Đa Năng",
       "family": "set"
     },
     {
       "re": "\\bBộ\\b.*Mũi Vít",
-      "id": 4077,
+      "type": "Bộ Mũi Vít",
       "family": "set"
     },
     {
       "re": "\\bBộ\\b.*(Tua Vít|Vít)\\b",
-      "id": 4078,
+      "type": "Bộ Tua Vít",
       "family": "set"
     },
     {
       "re": "\\bBộ\\b.*Đầu Tuýp",
-      "id": 4076,
+      "type": "Bộ Đầu Tuýp",
       "family": "set"
     },
     {
       "re": "\\bBộ\\b.*(Cờ Lê|Vòng.*Miệng|Vòng Tự Động)",
-      "id": 4071,
+      "type": "Bộ Cờ Lê",
       "family": "set"
     },
     {
       "re": "\\bBộ\\b.*Kìm",
-      "id": 4080,
+      "type": "Bộ Kìm",
       "family": "set"
     },
     {
       "re": "\\bBộ\\b.*Lục Giác",
-      "id": 1330,
+      "type": "Bộ Lục Giác",
       "family": "set"
     },
     {
       "re": "\\bBộ\\b.*(Đục|Đột)",
-      "id": 4089,
+      "type": "Bộ Đục",
       "family": "set"
     },
     {
       "re": "Cần.*(Siết Lực|Nổ)|Cờ Lê Lực|Cần Lực",
-      "id": 4006,
+      "type": "Cờ Lê Lực (Cần Siết Lực)",
       "family": "bar"
     },
     {
       "re": "Cần.*(Lắc|Lắt) Léo",
-      "id": 4739,
+      "type": "Cần Siết Lắc Léo",
       "family": "bar"
     },
     {
       "re": "(Cần|Cân).*Trượt.*Chữ T|Cân Trượt",
-      "id": 4738,
+      "type": "Cần Siết Đầu Trượt Chữ T",
       "family": "bar"
     },
     {
       "re": "Cần.*Chữ L",
-      "id": 4737,
+      "type": "Cần Siết Chữ L",
       "family": "bar"
     },
     {
       "re": "Cần.*Chữ T",
-      "id": 4741,
+      "type": "Cần Siết Chữ T",
       "family": "bar"
     },
     {
       "re": "Tay Vặn Đầu Tuýp|Tuốc Nơ Vít Gắn Đầu Tuýp",
-      "id": 4742,
+      "type": "Tay Vặn Đầu Tuýp",
       "family": "bar"
     },
     {
       "re": "(Tay Vặn|Cần) Tự Động",
-      "id": 4736,
+      "type": "Tay Vặn Tự Động",
       "family": "bar"
     },
     {
       "re": "(Đầu (Tuýp|Nối)).*(Lắc|Lắt) Léo|(Lắc|Lắt) Léo",
-      "id": 3995,
+      "type": "Đầu Tuýp Lắc Léo",
       "family": "socket"
     },
     {
       "re": "Đầu (Tuýp|Khẩu).*(Mũi|Sao|Hoa Thị|Bit|Bông)|Đầu Tuýp Gắn",
-      "id": 3994,
+      "type": "Đầu Tuýp Gắn Mũi",
       "family": "socket"
     },
     {
       "re": "(Đầu )?Chuyển Đổi|Đầu Nối|[\"”″]\\s*[FM]\\b",
-      "id": 4314,
+      "type": "Đầu Tuýp Chuyển Đổi",
       "family": "socket"
     },
     {
       "re": "Đầu (Tuýp|Khẩu)\\b",
-      "id": 3993,
+      "type": "Đầu Tuýp Lẻ",
       "family": "socket"
     },
     {
       "re": "Cờ Lê.*Cách Điện|Cờ Lê.*VDE",
-      "id": 6914,
+      "type": "Cờ Lê Cách Điện",
       "family": "wrench"
     },
     {
       "re": "Cờ Lê.*Đuôi Chuột|Đuôi Chuột",
-      "id": 4157,
+      "type": "Cờ Lê Đầu Tuýp Đuôi Chuột",
       "family": "wrench"
     },
     {
       "re": "Cờ Lê.*(Bánh Cóc|Tự Động)",
-      "id": 3982,
+      "type": "Cờ Lê Tự Động - Bánh Cóc",
       "family": "wrench"
     },
     {
       "re": "Cờ Lê.*(2 Đầu Vòng|Hai Đầu Vòng)",
-      "id": 3980,
+      "type": "Cờ Lê 2 Đầu Vòng",
       "family": "wrench"
     },
     {
       "re": "Cờ Lê.*(2 Đầu Miệng|Hai Đầu Miệng)",
-      "id": 3979,
+      "type": "Cờ Lê 2 Đầu Miệng",
       "family": "wrench"
     },
     {
       "re": "Cờ Lê.*(Móc|Dây Đai|Lọc Dầu|Vòng Đóng|1 Đầu|Một Đầu|Đặc Biệt)",
-      "id": 3984,
+      "type": "Cờ Lê Đặc Biệt",
       "family": "wrench"
     },
     {
       "re": "Cờ Lê.*Vòng Miệng|Cờ Lê Vòng|Cờ Lê Miệng",
-      "id": 3981,
+      "type": "Cờ Lê Vòng Miệng",
       "family": "wrench"
     },
     {
       "re": "Cờ Lê",
-      "id": 3981,
+      "type": "Cờ Lê Vòng Miệng",
       "family": "wrench"
     },
     {
       "re": "Mỏ Lết Răng",
-      "id": 6851,
+      "type": "Mỏ Lết Răng",
       "family": "wrench"
     },
     {
       "re": "Mỏ Lết",
-      "id": 6850,
+      "type": "Mỏ Lết Có Điều Chỉnh",
       "family": "wrench"
     },
     {
       "re": "Kìm.*(Mở Phe|Phe)",
-      "id": 4012,
+      "type": "Kìm Mở Phe",
       "family": "plier"
     },
     {
       "re": "Kìm Bấm.*(Xích|Dây Xích)",
-      "id": 4016,
+      "type": "Kìm Bấm Xích - Đai",
       "family": "plier"
     },
     {
       "re": "Kìm Bấm.*(Cos|Cosse|Cốt|Đầu Cốt)",
-      "id": 4014,
+      "type": "Kìm Bấm Cos",
       "family": "plier"
     },
     {
       "re": "Kìm Bấm Chết",
-      "id": 4015,
+      "type": "Kìm Bấm Chết",
       "family": "plier"
     },
     {
       "re": "Kìm Cắt",
-      "id": 4010,
+      "type": "Kìm Cắt",
       "family": "plier"
     },
     {
       "re": "Kìm.*(Mỏ Nhọn|Mũi Nhọn)",
-      "id": 4011,
+      "type": "Kìm Mũi Nhọn",
       "family": "plier"
     },
     {
       "re": "Kìm Mỏ Quạ",
-      "id": 4017,
+      "type": "Kìm Mỏ Quạ",
       "family": "plier"
     },
     {
       "re": "Kìm Tuốt Dây",
-      "id": 4013,
+      "type": "Kìm Tuốt Dây",
       "family": "plier"
     },
     {
       "re": "Kìm.*(Điện|Đầu Bằng)",
-      "id": 4009,
+      "type": "Kìm Đầu Bằng (Kìm Điện)",
       "family": "plier"
     },
     {
       "re": "Kìm.*(2 Lỗ|Hai Lỗ)",
-      "id": 4081,
+      "type": "Kìm 2 Lỗ",
       "family": "plier"
     },
     {
       "re": "Kìm.*(Lọc Dầu|Đặc Biệt)",
-      "id": 4307,
+      "type": "Kìm Đặc Biệt",
       "family": "plier"
     },
     {
       "re": "Kìm",
-      "id": 4307,
+      "type": "Kìm Đặc Biệt",
       "family": "plier",
       "review": true
     },
     {
       "re": "Mũi Siết",
-      "id": 4005,
+      "type": "Mũi Vít - Phụ Kiện",
       "family": "bit"
     },
     {
       "re": "Mũi Vít",
-      "id": 4005,
+      "type": "Mũi Vít - Phụ Kiện",
       "family": "bit"
     },
     {
       "re": "Tua Vít.*(2 Đầu|Hai Đầu)",
-      "id": 6854,
+      "type": "Tua Vít 2 Đầu",
       "family": "screwdriver"
     },
     {
       "re": "Tua Vít.*(Đầu Sao|Hoa Thị|Sao)",
-      "id": 6858,
+      "type": "Tua Vít Hoa Thị",
       "family": "screwdriver"
     },
     {
       "re": "Tua Vít.*(Đai Ốc|Đầu Khẩu)",
-      "id": 6857,
+      "type": "Tua Vít Đầu Khẩu Lục Giác",
       "family": "screwdriver"
     },
     {
       "re": "Tua Vít.*Lục Giác",
-      "id": 6856,
+      "type": "Tua Vít Đầu Lục Giác",
       "family": "screwdriver"
     },
     {
       "re": "Tua Vít Đóng",
-      "id": 3162,
+      "type": "Tua Vít Đóng",
       "family": "screwdriver"
     },
     {
       "re": "Tua Vít.*(Bake|Pake|PH[0-9])",
-      "id": 4000,
+      "type": "Tua Vít Bake",
       "family": "screwdriver"
     },
     {
       "re": "Tua Vít.*Dẹp|Tua Vít.*Dep",
-      "id": 4001,
+      "type": "Tua Vít Dẹp",
       "family": "screwdriver"
     },
     {
       "re": "Tua Vít|Tuốc Nơ Vít",
-      "id": 4001,
+      "type": "Tua Vít Dẹp",
       "family": "screwdriver"
     },
     {
       "re": "Lục Giác.*Chữ T|Cần Chữ T",
-      "id": 1412,
+      "type": "Cây Vặn Lục Giác Chữ T",
       "family": "hexkey"
     },
     {
       "re": "Lục Giác.*Chữ L",
-      "id": 1326,
+      "type": "Cây Vặn Lục Giác Chữ L",
       "family": "hexkey"
     },
     {
       "re": "(Cây Vặn |Cây )?Lục Giác",
-      "id": 1326,
+      "type": "Cây Vặn Lục Giác Chữ L",
       "family": "hexkey"
     },
     {
       "re": "Búa Nhựa",
-      "id": 4749,
+      "type": "Búa Nhựa",
       "family": "hammer"
     },
     {
       "re": "Búa Cao Su",
-      "id": 4746,
+      "type": "Búa Cao Su",
       "family": "hammer"
     },
     {
       "re": "Búa Tạ",
-      "id": 4747,
+      "type": "Búa Tạ",
       "family": "hammer"
     },
     {
       "re": "Búa.*(Đầu Bi|Đầu Tròn|Bi Tròn)",
-      "id": 4748,
+      "type": "Búa Đầu Bi Tròn",
       "family": "hammer"
     },
     {
       "re": "Búa Nhổ Đinh",
-      "id": 4745,
+      "type": "Búa Nhổ Đinh",
       "family": "hammer"
     },
     {
       "re": "Búa Gò",
-      "id": 4750,
+      "type": "Búa Gò",
       "family": "hammer"
     },
     {
       "re": "Búa Đồng",
-      "id": 4751,
+      "type": "Búa Đồng",
       "family": "hammer"
     },
     {
       "re": "Búa Rìu",
-      "id": 6946,
+      "type": "Búa Rìu",
       "family": "hammer"
     },
     {
       "re": "Búa",
-      "id": 4748,
+      "type": "Búa Đầu Bi Tròn",
       "family": "hammer",
       "review": true
     },
     {
       "re": "Cảo.*(Vô Bạc|Piston)",
-      "id": 4067,
+      "type": "Cảo Vô Bạc Piston",
       "family": "puller"
     },
     {
       "re": "Cảo.*Lọc Dầu",
-      "id": 4066,
+      "type": "Cảo Mở Lọc Dầu",
       "family": "puller"
     },
     {
       "re": "Cảo Chữ F",
-      "id": 6947,
+      "type": "Cảo Chữ F",
       "family": "puller"
     },
     {
       "re": "Cảo Chữ C",
-      "id": 4053,
+      "type": "Cảo Chữ C",
       "family": "puller"
     },
     {
       "re": "Cảo.*(2 Chấu|Hai Chấu)",
-      "id": 4054,
+      "type": "Cảo 2 Chấu",
       "family": "puller"
     },
     {
       "re": "Cảo.*(3 Chấu|Ba Chấu)",
-      "id": 4055,
+      "type": "Cảo 3 Chấu",
       "family": "puller"
     },
     {
       "re": "Cảo.*(Dĩa|Rotin|Đặc Biệt)",
-      "id": 4315,
+      "type": "Cảo Đặc Biệt",
       "family": "puller"
     },
     {
       "re": "Cảo",
-      "id": 4315,
+      "type": "Cảo Đặc Biệt",
       "family": "puller",
       "review": true
     },
     {
       "re": "Kéo Cắt Tôn",
-      "id": 4021,
+      "type": "Kéo Cắt Tôn",
       "family": "cutter"
     },
     {
       "re": "Kéo Cắt Cành",
-      "id": 4744,
+      "type": "Kéo Cắt Cành",
       "family": "cutter"
     },
     {
       "re": "Kéo.*(Ống Nhựa|Ống PVC|Cắt Ống)",
-      "id": 3021,
+      "type": "Kéo Cắt Ống Nhựa",
       "family": "cutter"
     },
     {
       "re": "Kéo.*Đa Năng",
-      "id": 6864,
+      "type": "Kéo Cắt Đa Năng",
       "family": "cutter"
     },
     {
       "re": "Kéo",
-      "id": 6864,
+      "type": "Kéo Cắt Đa Năng",
       "family": "cutter"
     },
     {
       "re": "Dao Rọc Giấy",
-      "id": 4020,
+      "type": "Dao Rọc Giấy",
       "family": "cutter"
     },
     {
       "re": "Dao.*Ống Đồng",
-      "id": 4022,
+      "type": "Dao Cắt Ống Đồng",
       "family": "cutter"
     },
     {
       "re": "Dao Rọc Cáp",
-      "id": 6948,
+      "type": "Dao Rọc Cáp",
       "family": "cutter"
     },
     {
       "re": "Dao",
-      "id": 4020,
+      "type": "Dao Rọc Giấy",
       "family": "cutter"
     },
     {
       "re": "Thước Cuộn|Thước Dây",
-      "id": 2597,
+      "type": "Thước Cuộn - Thước Dây",
       "family": "measure"
     },
     {
       "re": "Thước.*(Thủy|Nivo)",
-      "id": 2608,
+      "type": "Thước Thủy - Nivo",
       "family": "measure"
     },
     {
       "re": "Thước Cặp",
-      "id": 2598,
+      "type": "Thước Cặp",
       "family": "measure"
     },
     {
       "re": "Thước.*Cao|Đo Chiều Cao",
-      "id": 2605,
+      "type": "Thước Đo Cao",
       "family": "measure"
     },
     {
       "re": "Thước.*Góc",
-      "id": 2606,
+      "type": "Thước Đo Góc",
       "family": "measure"
     },
     {
       "re": "Thước.*(Thẳng|Lá)",
-      "id": 2596,
+      "type": "Thước Thẳng",
       "family": "measure"
     },
     {
       "re": "Thước",
-      "id": 2596,
+      "type": "Thước Thẳng",
       "family": "measure"
     },
     {
       "re": "Mũi Đột|\\bĐột\\b",
-      "id": 4035,
+      "type": "Đục (Mũi Đột)",
       "family": "chisel"
     },
     {
       "re": "Mũi Đục",
-      "id": 3065,
+      "type": "Mũi Đục",
       "family": "chisel"
     },
     {
       "re": "\\bĐục\\b",
-      "id": 3065,
+      "type": "Mũi Đục",
       "family": "chisel"
     },
     {
       "re": "(Bút|Cây) Thử.*(Điện|Bình)",
-      "id": 4004,
+      "type": "Bút Thử Điện",
       "family": "electric"
     },
     {
       "re": "Mỏ Hàn",
-      "id": 3824,
+      "type": "Mỏ Hàn Chì - Phụ Kiện",
       "family": "solder"
     }
   ]
