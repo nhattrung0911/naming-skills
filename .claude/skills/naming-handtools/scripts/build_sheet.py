@@ -84,12 +84,29 @@ def main():
     ap.add_argument("--orig", default=None, help="file gốc để giữ Part ID/Part#")
     ap.add_argument("--sheet", default=0)
     ap.add_argument("--code-col", default="Mã hãng")
+    ap.add_argument("--cache", default=None, help="cache.json: gộp kết quả cũ + ghi kết quả mới")
     ap.add_argument("-o", "--out", required=True)
     a = ap.parse_args()
 
     data = json.loads(Path(a.results).read_text(encoding="utf-8"))
     if isinstance(data, dict):
         data = data.get("results") or data.get("rows") or []
+
+    # CACHE: gộp record cũ (mã không có trong research mới) + cập nhật cache bằng research mới
+    cache = {}
+    if a.cache and Path(a.cache).exists():
+        cache = json.loads(Path(a.cache).read_text(encoding="utf-8"))
+    new_codes = {str(r.get("code")).strip() for r in data}
+    if a.cache:
+        for code, rec in cache.items():           # bù các mã đã cache, không research lại
+            if code not in new_codes:
+                data.append(rec)
+        for r in data:                             # cập nhật cache bằng record mới
+            c = str(r.get("code") or "").strip()
+            if c:
+                cache[c] = r
+        Path(a.cache).write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
+
     out = pd.DataFrame([build_row(r) for r in data])
 
     if a.orig:

@@ -6,3 +6,6 @@ __pycache__/
 *.csv
 .DS_Store
 category_ids.local.json
+cache.json
+*.cache.json
+work/

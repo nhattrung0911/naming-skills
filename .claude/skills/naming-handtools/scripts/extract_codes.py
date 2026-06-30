@@ -3,9 +3,13 @@
 Đọc file Excel/CSV chứa cột MÃ HÃNG -> in JSON list để agent chia việc.
 Tự dò cột mã (Mã hãng / ma_hang / code / part_number...) + cột brand/description nếu có.
 
+Tối ưu chi phí: --dedup (gộp mã trùng) + --cache cache.json (bỏ mã đã tra trước đó).
+-> agent CHỈ research mã `need_research=true`. Mã đã cache lấy lại từ file, KHÔNG search lại.
+
 Dùng:
-    python extract_codes.py input.xlsx [--sheet 0] [--code-col "Mã hãng"]
--> stdout: {"code_col":..., "sheet":..., "rows":[{"i":0,"code":"...","brand":"...","desc":"..."}]}
+    python extract_codes.py input.xlsx [--sheet 0] [--code-col "Mã hãng"] [--cache cache.json]
+-> stdout: {"code_col":..., "n":.., "n_todo":.., "n_cached":..,
+            "rows":[{"i":0,"code":"...","brand":..,"desc":..,"need_research":true|false}]}
 """
 import argparse, json, sys, io
 from pathlib import Path
@@ -37,7 +41,12 @@ def main():
     ap.add_argument("inp")
     ap.add_argument("--sheet", default=0)
     ap.add_argument("--code-col", default=None)
+    ap.add_argument("--cache", default=None, help="cache.json đã tra trước -> bỏ qua mã đã có")
+    ap.add_argument("--no-dedup", action="store_true", help="giữ mã trùng (mặc định gộp)")
     a = ap.parse_args()
+    cache = {}
+    if a.cache and Path(a.cache).exists():
+        cache = json.loads(Path(a.cache).read_text(encoding="utf-8"))
     p = Path(a.inp)
     sheet = a.sheet
     try:
@@ -57,20 +66,27 @@ def main():
     brand_col = pick([c for c in df.columns if c != code_col], BRAND_HINTS)
     desc_col = pick([c for c in df.columns if c != code_col], DESC_HINTS)
 
-    rows = []
+    rows, seen = [], set()
     for i, r in df.iterrows():
         code = r.get(code_col)
         if pd.isna(code) or str(code).strip() == "":
             continue
+        code = str(code).strip()
+        if not a.no_dedup and code in seen:        # gộp mã trùng
+            continue
+        seen.add(code)
         rows.append({
             "i": int(i),
-            "code": str(code).strip(),
+            "code": code,
             "brand": (str(r.get(brand_col)).strip() if brand_col and not pd.isna(r.get(brand_col)) else None),
             "desc": (str(r.get(desc_col)).strip() if desc_col and not pd.isna(r.get(desc_col)) else None),
+            "need_research": code not in cache,    # đã cache -> khỏi search lại
         })
+    todo = sum(1 for r in rows if r["need_research"])
     print(json.dumps({"code_col": str(code_col), "brand_col": str(brand_col) if brand_col else None,
-                      "desc_col": str(desc_col) if desc_col else None,
-                      "sheet": sheet, "n": len(rows), "rows": rows}, ensure_ascii=False))
+                      "desc_col": str(desc_col) if desc_col else None, "sheet": sheet,
+                      "n": len(rows), "n_todo": todo, "n_cached": len(rows) - todo,
+                      "rows": rows}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

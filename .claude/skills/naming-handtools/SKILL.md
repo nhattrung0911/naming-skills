@@ -12,24 +12,21 @@ Input: file Excel/CSV có **cột mã hãng** (có thể KHÔNG có description)
 ## Quy trình agent (chạy full, không hỏi lại trừ khi thiếu cột mã)
 > Trong các lệnh dưới, `<SKILL_DIR>` = thư mục chứa SKILL.md này (cùng cấp `scripts/`) — dùng đường dẫn tuyệt đối.
 
-### B1 — Đọc mã
+### B1 — Đọc mã (+ cache để RẺ)
 ```bash
-python "<SKILL_DIR>/scripts/extract_codes.py" "<file>" [--sheet <s>] [--code-col "<tên cột>"]
+python "<SKILL_DIR>/scripts/extract_codes.py" "<file>" [--code-col "<cột>"] --cache cache.json
 ```
-Trả JSON `{code_col, brand_col, desc_col, n, rows:[{i,code,brand,desc}]}`. Nếu `error` (không thấy cột mã) → hỏi user tên cột. Lưu JSON này.
+Trả `{n, n_todo, n_cached, rows:[{i,code,brand,desc,need_research}]}`. **CHỈ research mã `need_research=true`** (mã trùng đã gộp, mã đã cache bỏ qua). `error` → hỏi tên cột.
 
-### B2 — Nghiên cứu đa nguồn (DISPATCH SUBAGENT SONG SONG)
-Chia `rows` thành lô (~8–12 mã/agent). Mỗi lô = 1 subagent (Agent tool, `general-purpose`), chạy **song song** (nhiều Agent trong 1 message). Prompt mỗi subagent dùng **template ở mục "Prompt subagent" bên dưới**, nhồi danh sách mã của lô đó.
+### B2 — Nghiên cứu đa nguồn (DISPATCH SUBAGENT SONG SONG) — chỉ mã `need_research`
+Chia mã `need_research` thành lô (~8–12 mã/agent). Mỗi lô = 1 subagent song song (nhiều Agent trong 1 message), dùng **template "Prompt subagent"**. Mỗi lô trả **JSON list** theo Schema → ghi `research_part<k>.json`. Dừng ở 2 nguồn khớp (early-stop).
 
-Mỗi subagent trả về **JSON list** theo schema (mục "Schema") — ghi ra file lô `research_part<k>.json` trong scratchpad.
-
-### B3 — Gộp + ghép sheet (deterministic)
-Gộp các `research_part*.json` thành `research_all.json` (1 list). Rồi:
+### B3 — Gộp + ghép sheet + cập nhật cache
 ```bash
 python "<SKILL_DIR>/scripts/build_sheet.py" research_all.json --orig "<file>" \
- --sheet <s> --code-col "<code_col>" -o "<out>.xlsx"
+ --code-col "<code_col>" --cache cache.json -o "<out>.xlsx"
 ```
-Engine tự gán `category_id` từ `type`/`name_vi` (xem `references/category_map.md`), đổ thông số vào cột TS_*, set status.
+Engine gán `category_id` (nếu có `category_ids.local.json`), đổ TS_*, set status; `--cache` bù mã đã cache + ghi cache mới → lần sau chỉ tra mã mới.
 
 ### B4 — Cổng QA + báo cáo
 - Mọi dòng `OK` phải có **≥2 nguồn** + tên chuẩn + category. `REVIEW_LOW_SOURCE`/`REVIEW`/`UNKNOWN_TYPE` → liệt kê để user xử lý.
